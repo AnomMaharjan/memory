@@ -246,7 +246,9 @@ function LandingPage() {
           </div>
         </div>
 
-
+        <p className="landing-footer">
+          Built with ❤️ — Real-time memory battles with live state synchronization
+        </p>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ function GameBoard({ deck, flipped, matched, matchedBy = {}, onFlip, gridSize = 
 
   return (
     <div
-      className={`game-board theme-${theme} grid-${gridSize}`}
+      className={`game-board theme-${theme}`}
       style={{
         '--cols': cols,
         '--rows': rows,
