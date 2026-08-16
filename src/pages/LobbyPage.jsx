@@ -261,9 +261,11 @@ function LobbyPage() {
 
                 <div className="difficulty-card-group">
                   {[
-                    { key: 'easy', icon: '🌱', title: 'Easy', subtitle: '4×4 Grid · 8 Pairs' },
+                    { key: 'quick', icon: '🌱', title: 'Quick', subtitle: '4×3 Grid · 6 Pairs' },
+                    { key: 'easy', icon: '🌿', title: 'Easy', subtitle: '4×4 Grid · 8 Pairs' },
                     { key: 'medium', icon: '⚡', title: 'Medium', subtitle: '6×6 Grid · 18 Pairs' },
                     { key: 'hard', icon: '🔥', title: 'Hard', subtitle: '8×8 Grid · 32 Pairs' },
+                    { key: 'master', icon: '💀', title: 'Master', subtitle: '10×8 Grid · 40 Pairs' },
                   ].map(({ key, icon, title, subtitle }) => {
                     const isSelected = gridSize === key;
                     return (

@@ -50,7 +50,7 @@ service cloud.firestore {
 
     // Validate grid size enum
     function isValidGridSize(g) {
-      return g is string && g in ['easy', 'medium', 'hard'];
+      return g is string && g in ['quick', 'easy', 'medium', 'hard', 'master'];
     }
 
     // Validate winner field: null or one of the allowed values
@@ -65,7 +65,7 @@ service cloud.firestore {
              code.matches('^[A-Z0-9]{6}$');
     }
 
-    // Validate player score: 0–32 (max pairs in hard mode)
+    // Validate player score: 0–40 (max pairs in master mode)
     function isValidPlayer(p) {
       return p == null || (
         p is map &&
@@ -74,7 +74,7 @@ service cloud.firestore {
         isValidPlayerName(p.name) &&
         p.score is number &&
         p.score >= 0 &&
-        p.score <= 32
+        p.score <= 40
       );
     }
 
@@ -119,9 +119,9 @@ service cloud.firestore {
              isValidStatus(d.status) &&
              isValidGridSize(d.gridSize) &&
              isValidTurn(d.currentTurn) &&
-             d.deck is list && d.deck.size() >= 16 && d.deck.size() <= 64 &&
+             d.deck is list && d.deck.size() >= 12 && d.deck.size() <= 80 &&
              d.flipped is list && d.flipped.size() <= 2 &&
-             d.matched is list && d.matched.size() <= 32 &&
+             d.matched is list && d.matched.size() <= 40 &&
              isValidWinner(d.winner) &&
              isValidPlayersMap(d.players) &&
              d.createdAt is string && d.createdAt.size() > 0 && d.createdAt.size() <= 50 &&
@@ -145,7 +145,7 @@ service cloud.firestore {
         isValidTurn(d.currentTurn) &&
         // Flipped/matched must be valid lists
         d.flipped is list && d.flipped.size() <= 2 &&
-        d.matched is list && d.matched.size() <= 32 &&
+        d.matched is list && d.matched.size() <= 40 &&
         // Winner valid
         isValidWinner(d.winner) &&
         // Players map valid

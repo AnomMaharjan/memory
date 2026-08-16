@@ -1,23 +1,57 @@
 // Difficulty → grid size mapping
 export const DIFFICULTY_CONFIG = {
-  easy:   { cols: 4, pairs: 8,  label: 'Easy',   grid: '4×4', time: 90  },
-  medium: { cols: 6, pairs: 18, label: 'Medium',  grid: '6×6', time: 150 },
-  hard:   { cols: 8, pairs: 32, label: 'Hard',    grid: '8×8', time: 240 },
+  quick:  { cols: 4, pairs: 6,  label: 'Quick',  grid: '4×3', time: 45,  turnTime: 8  },
+  easy:   { cols: 4, pairs: 8,  label: 'Easy',   grid: '4×4', time: 90,  turnTime: 10 },
+  medium: { cols: 6, pairs: 18, label: 'Medium', grid: '6×6', time: 150, turnTime: 10 },
+  hard:   { cols: 8, pairs: 32, label: 'Hard',   grid: '8×8', time: 240, turnTime: 10 },
+  master: { cols: 10, pairs: 40, label: 'Master', grid: '10×8', time: 300, turnTime: 12 },
 };
 
-// 8 pairs for Easy (4×4)
-const SYMBOLS_EASY = [
+export const GAME_MODES = {
+  classic: {
+    key: 'classic',
+    icon: '🎯',
+    name: 'Classic',
+    desc: 'Standard memory match rules',
+  },
+  blitz: {
+    key: 'blitz',
+    icon: '⚡',
+    name: 'Speed Blitz',
+    desc: '30s start (+4s per match, -2s miss penalty)',
+  },
+  combo: {
+    key: 'combo',
+    icon: '🔥',
+    name: 'Combo Streak',
+    desc: 'Consecutive matches earn 1x, 2x, 4x points',
+  },
+  flash: {
+    key: 'flash',
+    icon: '👁️',
+    name: 'Flash Peek',
+    desc: 'All cards revealed for 3s at start',
+  },
+};
+
+// 6 pairs for Quick (4×3)
+const SYMBOLS_QUICK = [
   { id: 'moon',      emoji: '🌙', label: 'Moon'      },
   { id: 'star',      emoji: '⭐', label: 'Star'      },
   { id: 'fire',      emoji: '🔥', label: 'Fire'      },
   { id: 'flower',    emoji: '🌸', label: 'Flower'    },
   { id: 'gem',       emoji: '💎', label: 'Gem'       },
   { id: 'thunder',   emoji: '⚡', label: 'Thunder'   },
+];
+
+// 8 pairs for Easy (4×4)
+const SYMBOLS_EASY = [
+  ...SYMBOLS_QUICK,
   { id: 'wave',      emoji: '🌊', label: 'Wave'      },
   { id: 'comet',     emoji: '☄️', label: 'Comet'     },
 ];
 
-// 18 pairs for Medium (6×6) — includes Easy symbols
+// 18 pairs for Medium (6×6)
 const SYMBOLS_MEDIUM = [
   ...SYMBOLS_EASY,
   { id: 'planet',    emoji: '🪐', label: 'Planet'    },
@@ -32,7 +66,7 @@ const SYMBOLS_MEDIUM = [
   { id: 'crystal',   emoji: '🔮', label: 'Crystal'   },
 ];
 
-// 32 pairs for Hard (8×8) — includes all Medium symbols + 14 more
+// 32 pairs for Hard (8×8)
 const SYMBOLS_HARD = [
   ...SYMBOLS_MEDIUM,
   { id: 'fox',       emoji: '🦊', label: 'Fox'       },
@@ -51,10 +85,25 @@ const SYMBOLS_HARD = [
   { id: 'key',       emoji: '🗝️', label: 'Key'       },
 ];
 
+// 40 pairs for Master (10×8) — Hard + 8 epic mythical symbols
+const SYMBOLS_MASTER = [
+  ...SYMBOLS_HARD,
+  { id: 'wand',      emoji: '🪄', label: 'Magic Wand' },
+  { id: 'unicorn',   emoji: '🦄', label: 'Unicorn'    },
+  { id: 'swords',    emoji: '⚔️', label: 'Swords'     },
+  { id: 'shield',    emoji: '🛡️', label: 'Shield'     },
+  { id: 'ufo',       emoji: '🛸', label: 'UFO'        },
+  { id: 'sun',       emoji: '☀️', label: 'Sun'        },
+  { id: 'compass',   emoji: '🧭', label: 'Compass'    },
+  { id: 'hourglass', emoji: '⏳', label: 'Hourglass'  },
+];
+
 const SYMBOL_MAP = {
+  quick:  SYMBOLS_QUICK,
   easy:   SYMBOLS_EASY,
   medium: SYMBOLS_MEDIUM,
   hard:   SYMBOLS_HARD,
+  master: SYMBOLS_MASTER,
 };
 
 /**
@@ -72,7 +121,7 @@ function shuffle(array) {
 /**
  * Create a shuffled deck of card objects.
  * Each symbol appears exactly twice.
- * @param {'easy'|'medium'|'hard'} difficulty
+ * @param {'quick'|'easy'|'medium'|'hard'|'master'} difficulty
  * @returns {Card[]}
  */
 export function createDeck(difficulty = 'easy') {
@@ -94,7 +143,7 @@ export function generateRoomCode() {
 
 /**
  * Get grid column count for a difficulty level.
- * @param {'easy'|'medium'|'hard'} difficulty
+ * @param {'quick'|'easy'|'medium'|'hard'|'master'} difficulty
  * @returns {number}
  */
 export function getGridCols(difficulty = 'easy') {

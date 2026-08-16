@@ -10,7 +10,7 @@ import ReactionPicker from '../components/ReactionPicker';
 import ReactionOverlay from '../components/ReactionOverlay';
 import ParticleBackground from '../components/ParticleBackground';
 import { soundManager } from '../utils/sound';
-import { DIFFICULTY_CONFIG, createDeck } from '../utils/deck';
+import { DIFFICULTY_CONFIG, GAME_MODES, createDeck } from '../utils/deck';
 
 // ─────────────────────────────────────────────────────────────
 // Single Player Game
@@ -18,12 +18,20 @@ import { DIFFICULTY_CONFIG, createDeck } from '../utils/deck';
 function SoloGame({ navigate }) {
   const location = useLocation();
   const difficulty = location.state?.difficulty ?? 'easy';
+  const gameMode = location.state?.gameMode ?? 'classic';
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.easy;
+  const modeCfg = GAME_MODES[gameMode] ?? GAME_MODES.classic;
 
-  const { deck, flipped, matched, moves, timeLeft, initialTime, gameOver, won, flipCard, restart } = useGame(difficulty);
+  const {
+    deck, flipped, matched, moves,
+    timeLeft, initialTime, gameOver, won,
+    streak, bestStreak, score, timeBonus,
+    isPeeking, peekCountdown,
+    flipCard, restart,
+  } = useGame(difficulty, gameMode);
+
   const matchedCount = matched.size;
   const totalPairs = deck.length / 2;
-
   const showModal = won || gameOver;
 
   return (
@@ -33,21 +41,59 @@ function SoloGame({ navigate }) {
       <header className="game-header">
         <button id="btn-back-solo" className="back-btn" onClick={() => navigate('/')}>← Menu</button>
         <div className="game-title-group">
-          <h1 className="game-title">Solo Mode</h1>
+          <div className="game-mode-title-row">
+            <h1 className="game-title">Solo Mode</h1>
+            <span className={`game-mode-badge game-mode-badge--${gameMode}`}>
+              {modeCfg.icon} {modeCfg.name}
+            </span>
+          </div>
           <span className={`difficulty-badge difficulty-badge--${difficulty}`}>{cfg.label} · {cfg.grid}</span>
         </div>
         <div className="game-stats">
-          <div className="stat">
-            <span className="stat-value">{matchedCount}/{totalPairs}</span>
-            <span className="stat-label">Pairs</span>
+          {gameMode === 'combo' ? (
+            <>
+              <div className="stat">
+                <span className="stat-value">{score}</span>
+                <span className="stat-label">Score</span>
+              </div>
+              <div className="stat">
+                <span className="stat-value" style={{ color: streak >= 2 ? 'var(--accent)' : 'inherit' }}>
+                  {streak > 1 ? `×${streak}` : streak}
+                </span>
+                <span className="stat-label">Streak</span>
+              </div>
+            </>
+          ) : (
+            <div className="stat">
+              <span className="stat-value">{matchedCount}/{totalPairs}</span>
+              <span className="stat-label">Pairs</span>
+            </div>
+          )}
+
+          <div className="timer-stat-wrapper">
+            <Timer timeLeft={timeLeft} totalTime={initialTime} />
+            {timeBonus && (
+              <span key={timeBonus.id} className={`floating-time-bonus floating-time-bonus--${timeBonus.type}`}>
+                {timeBonus.amount}
+              </span>
+            )}
           </div>
-          <Timer timeLeft={timeLeft} totalTime={initialTime} />
+
           <div className="stat">
             <span className="stat-value">{moves}</span>
             <span className="stat-label">Moves</span>
           </div>
         </div>
       </header>
+
+      {/* Flash Peek Alert Banner */}
+      {isPeeking && (
+        <div className="flash-peek-banner fade-in">
+          <span className="flash-peek-icon">👁️</span>
+          <span className="flash-peek-text">Memorize card positions! Flash ends in</span>
+          <span className="flash-peek-countdown">{peekCountdown}s</span>
+        </div>
+      )}
 
       <main className="game-main">
         <GameBoard
@@ -66,7 +112,9 @@ function SoloGame({ navigate }) {
           title={won ? 'You did it! 🎉' : 'Time\'s up! ⏰'}
           subtitle={
             won
-              ? `Matched all ${totalPairs} pairs in ${moves} moves!`
+              ? (gameMode === 'combo'
+                  ? `Spectacular! Scored ${score} pts with a max streak of ${bestStreak} in ${moves} moves!`
+                  : `Matched all ${totalPairs} pairs in ${moves} moves with ${timeLeft}s remaining!`)
               : `You matched ${matchedCount} of ${totalPairs} pairs.`
           }
           onPlayAgain={restart}

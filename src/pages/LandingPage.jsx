@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
-import { DIFFICULTY_CONFIG } from '../utils/deck';
+import { DIFFICULTY_CONFIG, GAME_MODES } from '../utils/deck';
 
 const DIFFICULTIES = [
   {
-    key: 'easy',
+    key: 'quick',
     icon: '🌱',
+    color: 'var(--teal)',
+    glow: 'rgba(79,209,197,0.25)',
+    border: 'rgba(79,209,197,0.35)',
+  },
+  {
+    key: 'easy',
+    icon: '🌿',
     color: 'var(--success)',
     glow: 'rgba(72,187,120,0.25)',
     border: 'rgba(72,187,120,0.35)',
@@ -25,15 +32,23 @@ const DIFFICULTIES = [
     glow: 'rgba(245,101,101,0.25)',
     border: 'rgba(245,101,101,0.35)',
   },
+  {
+    key: 'master',
+    icon: '💀',
+    color: '#ed8936',
+    glow: 'rgba(237,137,54,0.3)',
+    border: 'rgba(237,137,54,0.4)',
+  },
 ];
 
 function LandingPage() {
   const navigate = useNavigate();
   const [soloExpanded, setSoloExpanded] = useState(false);
   const [difficulty, setDifficulty] = useState('easy');
+  const [gameMode, setGameMode] = useState('classic');
 
   const startSolo = () => {
-    navigate('/game/solo', { state: { difficulty } });
+    navigate('/game/solo', { state: { difficulty, gameMode } });
   };
 
   return (
@@ -73,16 +88,40 @@ function LandingPage() {
               <div className="mode-icon">🎮</div>
               <div className="mode-text">
                 <h2 className="mode-title">Solo Mode</h2>
-                <p className="mode-desc">Race against the clock to match all pairs.</p>
+                <p className="mode-desc">Race against the clock, test modifiers & hone memory.</p>
               </div>
               <div className="mode-pill">Single Player</div>
               <div className={`mode-chevron${soloExpanded ? ' mode-chevron--open' : ''}`}>›</div>
             </div>
 
-            {/* Difficulty picker */}
+            {/* Difficulty & Modifier picker */}
             <div className="difficulty-drawer" aria-hidden={!soloExpanded}>
-              <p className="difficulty-label">Choose difficulty</p>
-              <div className="difficulty-grid">
+              {/* Game Mode Modifiers */}
+              <p className="difficulty-label">Select Game Modifier</p>
+              <div className="game-mode-chips-grid">
+                {Object.values(GAME_MODES).map((mode) => {
+                  const isSelected = gameMode === mode.key;
+                  return (
+                    <button
+                      key={mode.key}
+                      id={`btn-gamemode-${mode.key}`}
+                      type="button"
+                      className={`game-mode-chip${isSelected ? ' is-selected' : ''}`}
+                      onClick={(e) => { e.stopPropagation(); setGameMode(mode.key); }}
+                    >
+                      <span className="mode-chip-icon">{mode.icon}</span>
+                      <span className="mode-chip-name">{mode.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mode-modifier-hint">
+                {GAME_MODES[gameMode]?.desc}
+              </p>
+
+              {/* Grid Size / Difficulty */}
+              <p className="difficulty-label" style={{ marginTop: '1rem' }}>Choose Grid Size</p>
+              <div className="difficulty-grid difficulty-grid--5cols">
                 {DIFFICULTIES.map(({ key, icon, color, glow, border }) => {
                   const cfg = DIFFICULTY_CONFIG[key];
                   const isSelected = difficulty === key;
@@ -101,17 +140,18 @@ function LandingPage() {
                       <span className="diff-icon">{icon}</span>
                       <span className="diff-name">{cfg.label}</span>
                       <span className="diff-grid">{cfg.grid}</span>
-                      <span className="diff-time">{cfg.time}s</span>
+                      <span className="diff-time">{gameMode === 'blitz' ? '30s' : `${cfg.time}s`}</span>
                     </button>
                   );
                 })}
               </div>
+
               <button
                 id="btn-start-solo"
                 className="btn btn-primary btn-solo-start"
                 onClick={(e) => { e.stopPropagation(); startSolo(); }}
               >
-                Play Now →
+                Play {GAME_MODES[gameMode]?.name} ({DIFFICULTY_CONFIG[difficulty]?.grid}) →
               </button>
             </div>
           </div>
