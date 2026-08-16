@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
-import { DIFFICULTY_CONFIG, GAME_MODES } from '../utils/deck';
+import { DIFFICULTY_CONFIG, GAME_MODES, THEMES } from '../utils/deck';
 
 const DIFFICULTIES = [
   {
@@ -44,15 +44,17 @@ const DIFFICULTIES = [
 function LandingPage() {
   const navigate = useNavigate();
   const [soloExpanded, setSoloExpanded] = useState(true);
+  const [theme, setTheme] = useState('classic');
   const [difficulty, setDifficulty] = useState('easy');
   const [gameMode, setGameMode] = useState('classic');
 
   const startSolo = () => {
-    navigate('/game/solo', { state: { difficulty, gameMode } });
+    navigate('/game/solo', { state: { difficulty, gameMode, theme } });
   };
 
   const selectedDiffCfg = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.easy;
   const selectedModeCfg = GAME_MODES[gameMode] || GAME_MODES.classic;
+  const selectedThemeCfg = THEMES[theme] || THEMES.classic;
 
   return (
     <div className="page landing-page">
@@ -75,7 +77,7 @@ function LandingPage() {
             Memory <span className="gradient-text">Duel</span>
           </h1>
           <p className="landing-subtitle">
-            Challenge your memory in Solo runs with modifiers or battle up to 4 friends in real-time.
+            Challenge your memory with customizable themes & modifiers, or battle up to 4 friends in real-time.
           </p>
         </div>
 
@@ -96,7 +98,7 @@ function LandingPage() {
                   <h2 className="mode-title">Solo Mode</h2>
                   <span className="mode-pill">Single Player</span>
                 </div>
-                <p className="mode-desc">Customize game modifiers, test your speed & beat high scores.</p>
+                <p className="mode-desc">Customize board themes, modifiers, test your speed & beat high scores.</p>
               </div>
               <div className={`mode-chevron${soloExpanded ? ' mode-chevron--open' : ''}`}>›</div>
             </div>
@@ -104,10 +106,42 @@ function LandingPage() {
             {/* Solo Mode Customizer Drawer */}
             {soloExpanded && (
               <div className="solo-config-drawer fade-in">
-                {/* Modifier Section */}
+                {/* 1. Theme Section */}
                 <div className="config-section">
                   <div className="config-label-row">
-                    <span className="config-label">1. Choose Game Modifier</span>
+                    <span className="config-label">1. Select Board Theme</span>
+                    <span className="config-sublabel">{selectedThemeCfg.name} ({selectedThemeCfg.cardBack} Cards)</span>
+                  </div>
+                  <div className="themes-grid">
+                    {Object.values(THEMES).map((t) => {
+                      const isSelected = theme === t.key;
+                      return (
+                        <button
+                          key={t.key}
+                          id={`btn-theme-${t.key}`}
+                          type="button"
+                          className={`theme-card${isSelected ? ' is-active' : ''}`}
+                          style={isSelected ? {
+                            '--t-color': t.color,
+                            '--t-glow': t.glow,
+                            '--t-border': t.border,
+                          } : {}}
+                          onClick={() => setTheme(t.key)}
+                        >
+                          <span className="theme-card-icon">{t.icon}</span>
+                          <div className="theme-card-info">
+                            <span className="theme-card-name">{t.name}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Modifier Section */}
+                <div className="config-section">
+                  <div className="config-label-row">
+                    <span className="config-label">2. Choose Game Modifier</span>
                     <span className="config-sublabel">{selectedModeCfg.desc}</span>
                   </div>
                   <div className="modifiers-grid">
@@ -131,10 +165,10 @@ function LandingPage() {
                   </div>
                 </div>
 
-                {/* Difficulty Tier Section */}
+                {/* 3. Difficulty Tier Section */}
                 <div className="config-section">
                   <div className="config-label-row">
-                    <span className="config-label">2. Choose Grid Size</span>
+                    <span className="config-label">3. Choose Grid Size</span>
                     <span className="config-sublabel">{selectedDiffCfg.grid} ({selectedDiffCfg.pairs} Pairs)</span>
                   </div>
                   <div className="difficulty-tiers-row">
@@ -170,7 +204,7 @@ function LandingPage() {
                   className="btn btn-primary btn-hero-play"
                   onClick={startSolo}
                 >
-                  Launch Solo Match ({selectedModeCfg.name} · {selectedDiffCfg.grid}) →
+                  Launch Solo Match ({selectedThemeCfg.icon} {selectedThemeCfg.name} · {selectedModeCfg.name} · {selectedDiffCfg.grid}) →
                 </button>
               </div>
             )}

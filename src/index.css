@@ -237,7 +237,7 @@ body {
    ============================================================ */
 .landing-page {
   min-height: 100dvh;
-  background: 
+  background:
     radial-gradient(ellipse at 20% 20%, rgba(124, 106, 245, 0.12) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 80%, rgba(79, 209, 197, 0.08) 0%, transparent 50%),
     var(--bg);
@@ -495,6 +495,72 @@ body {
 .config-sublabel {
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+/* Themes Grid */
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 540px) {
+  .themes-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.65rem 0.35rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-spring);
+  text-align: center;
+}
+
+.theme-card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.theme-card.is-active {
+  background: color-mix(in srgb, var(--t-color, var(--accent)) 18%, transparent);
+  border-color: var(--t-border, var(--accent));
+  color: #fff;
+  box-shadow: 0 4px 18px var(--t-glow, var(--accent-glow));
+}
+
+.theme-card-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.theme-card-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.game-theme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 /* Modifiers Grid */
@@ -1313,10 +1379,8 @@ body {
   grid-template-columns: repeat(var(--cols, 4), 1fr);
   grid-template-rows: repeat(var(--rows, 4), 1fr);
   gap: var(--gap);
-  width: min(
-    calc(100vw - 2rem),
-    calc((100dvh - var(--header-h, 60px) - var(--panel-h, 0px) - 3rem) * (var(--cols, 4) / var(--rows, 4)))
-  );
+  width: min(calc(100vw - 2rem),
+      calc((100dvh - var(--header-h, 60px) - var(--panel-h, 0px) - 3rem) * (var(--cols, 4) / var(--rows, 4))));
   max-height: calc(100dvh - var(--header-h, 60px) - var(--panel-h, 0px) - 3rem);
   aspect-ratio: var(--cols, 4) / var(--rows, 4);
   margin: auto;
@@ -1359,35 +1423,102 @@ body {
   justify-content: center;
 }
 
+/* Holographic Shimmer Sweep Animation for Unturned Cards */
+@keyframes holographicShimmer {
+  0% {
+    transform: translateX(-160%) translateY(-160%) rotate(45deg);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.75;
+  }
+
+  45% {
+    transform: translateX(160%) translateY(160%) rotate(45deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(160%) translateY(160%) rotate(45deg);
+    opacity: 0;
+  }
+}
+
 /* Card back */
 .card-back {
-  background: linear-gradient(135deg, #1a1f35, #111627);
-  border: 1.5px solid rgba(124, 106, 245, 0.2);
+  background: linear-gradient(135deg, #181d33, #0f1322);
+  border: 1.5px solid var(--theme-border, rgba(124, 106, 245, 0.25));
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: box-shadow var(--duration-mid), border-color var(--duration-mid);
+  transition: all var(--duration-mid) var(--ease-spring);
   overflow: hidden;
+  position: relative;
 }
 
 .card-back::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(124, 106, 245, 0.05) 100%);
+  background: radial-gradient(circle at center, var(--theme-glow, rgba(124, 106, 245, 0.08)), transparent 70%);
+  pointer-events: none;
+}
+
+/* Holographic shimmer beam across unturned cards */
+.card-shimmer-sweep {
+  position: absolute;
+  inset: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(135deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.06) 44%,
+      rgba(255, 255, 255, 0.35) 50%,
+      var(--theme-color, rgba(124, 106, 245, 0.4)) 56%,
+      transparent 65%);
+  pointer-events: none;
+  transform: translateX(-160%) translateY(-160%) rotate(45deg);
+  animation: holographicShimmer 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: calc((var(--card-i, 0) % 7) * 0.4s);
+  z-index: 1;
 }
 
 .card-wrapper:not(.is-flipped):not(.is-matched):hover .card-back {
-  border-color: rgba(124, 106, 245, 0.5);
+  border-color: var(--theme-color, var(--accent));
   box-shadow:
-    0 8px 28px rgba(124, 106, 245, 0.2),
+    0 8px 28px var(--theme-glow, rgba(124, 106, 245, 0.25)),
     0 2px 8px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
 }
 
 .card-back-pattern {
-  width: 60%;
-  height: 60%;
-  opacity: 0.7;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-back-symbol {
+  font-size: clamp(1.1rem, 3.2vmin, 2rem);
+  line-height: 1;
+  z-index: 2;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  transition: transform var(--duration-fast) var(--ease-spring);
+}
+
+.card-wrapper:hover .card-back-symbol {
+  transform: scale(1.22) rotate(6deg);
+}
+
+.card-back-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--theme-color, var(--accent));
 }
 
 /* Card front */
@@ -3095,14 +3226,17 @@ body {
     opacity: 0;
     transform: translateY(6px) scale(0.85);
   }
+
   20% {
     opacity: 1;
     transform: translateY(0) scale(1.1);
   }
+
   80% {
     opacity: 1;
     transform: translateY(-10px) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-18px) scale(0.9);

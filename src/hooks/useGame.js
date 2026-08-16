@@ -5,16 +5,17 @@ import { soundManager } from '../utils/sound';
 const FLIP_DELAY_MS = 900;
 
 /**
- * Single-player memory game hook with support for Blitz, Combo Streak, and Flash Peek modes.
+ * Single-player memory game hook with support for Blitz, Combo Streak, Flash Peek modes, and Board Themes.
  *
  * @param {'quick'|'easy'|'medium'|'hard'|'master'} difficulty
  * @param {'classic'|'blitz'|'combo'|'flash'} gameMode
+ * @param {string} theme
  */
-export function useGame(difficulty = 'easy', gameMode = 'classic') {
+export function useGame(difficulty = 'easy', gameMode = 'classic', theme = 'classic') {
   const config = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.easy;
   const initialTime = gameMode === 'blitz' ? 30 : config.time;
 
-  const [deck, setDeck] = useState(() => createDeck(difficulty));
+  const [deck, setDeck] = useState(() => createDeck(difficulty, theme));
   const [flipped, setFlipped] = useState([]);       // indices of currently face-up cards (max 2)
   const [matched, setMatched] = useState(new Set()); // pairIds that have been matched
   const [moves, setMoves] = useState(0);
@@ -138,7 +139,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
   const restart = useCallback(() => {
     clearInterval(timerRef.current);
     clearInterval(peekTimerRef.current);
-    setDeck(createDeck(difficulty));
+    setDeck(createDeck(difficulty, theme));
     setFlipped([]);
     setMatched(new Set());
     setMoves(0);
@@ -147,6 +148,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
     setWon(false);
     setDisabled(false);
     setStreak(0);
+    setBestStreak(0);
     setScore(0);
     setTimeBonus(null);
 
@@ -156,7 +158,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
     } else {
       setIsPeeking(false);
     }
-  }, [difficulty, initialTime, gameMode]);
+  }, [difficulty, initialTime, gameMode, theme]);
 
   return {
     deck,
@@ -174,6 +176,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
     isPeeking,
     peekCountdown,
     gameMode,
+    theme,
     flipCard,
     restart,
   };

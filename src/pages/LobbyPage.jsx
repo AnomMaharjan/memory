@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { doc, setDoc, runTransaction } from 'firebase/firestore';
 import { db } from '../firebase';
-import { createDeck, generateRoomCode } from '../utils/deck';
+import { createDeck, generateRoomCode, THEMES } from '../utils/deck';
 import ParticleBackground from '../components/ParticleBackground';
 
 const TIMEOUT_MS = 10000;
@@ -23,6 +23,7 @@ function LobbyPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [gridSize, setGridSize] = useState('easy');
+  const [theme, setTheme] = useState('classic');
 
   // Live avatar initial
   const avatarLetter = playerName.trim().charAt(0).toUpperCase() || '👤';
@@ -39,7 +40,7 @@ function LobbyPage() {
 
     try {
       const code = generateRoomCode();
-      const deck = createDeck(gridSize);
+      const deck = createDeck(gridSize, theme);
       const roomRef = doc(db, 'rooms', code);
 
       await Promise.race([
@@ -47,6 +48,7 @@ function LobbyPage() {
           code,
           status: 'waiting',
           gridSize,
+          theme,
           currentTurn: 'player1',
           deck,
           flipped: [],
@@ -253,6 +255,39 @@ function LobbyPage() {
           {/* ── CREATE ROOM TAB ──────────────────────────────── */}
           {activeTab === 'create' && (
             <div className="tab-pane fade-in">
+              {/* Board Theme Selection */}
+              <div className="form-group">
+                <div className="form-label-row">
+                  <label className="form-label">Board Theme</label>
+                  <span className="form-hint">{THEMES[theme]?.name} ({THEMES[theme]?.cardBack} Cards)</span>
+                </div>
+                <div className="themes-grid">
+                  {Object.values(THEMES).map((t) => {
+                    const isSelected = theme === t.key;
+                    return (
+                      <button
+                        key={t.key}
+                        id={`btn-lobby-theme-${t.key}`}
+                        type="button"
+                        className={`theme-card${isSelected ? ' is-active' : ''}`}
+                        style={isSelected ? {
+                          '--t-color': t.color,
+                          '--t-glow': t.glow,
+                          '--t-border': t.border,
+                        } : {}}
+                        onClick={() => setTheme(t.key)}
+                      >
+                        <span className="theme-card-icon">{t.icon}</span>
+                        <div className="theme-card-info">
+                          <span className="theme-card-name">{t.name}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Grid Difficulty Selection */}
               <div className="form-group">
                 <div className="form-label-row">
                   <label className="form-label">Game Board Difficulty</label>

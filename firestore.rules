@@ -53,6 +53,11 @@ service cloud.firestore {
       return g is string && g in ['quick', 'easy', 'medium', 'hard', 'master'];
     }
 
+    // Validate theme enum
+    function isValidTheme(t) {
+      return t == null || (t is string && t in ['classic', 'animals', 'snacks', 'hearts', 'space', 'fantasy', 'arcade']);
+    }
+
     // Validate winner field: null or one of the allowed values
     function isValidWinner(w) {
       return w == null || w in ['player1', 'player2', 'player3', 'player4', 'draw'];
@@ -104,7 +109,7 @@ service cloud.firestore {
     // Allowed top-level fields for room documents
     function allowedRoomKeys() {
       return [
-        'code', 'status', 'gridSize', 'currentTurn', 'deck', 'flipped',
+        'code', 'status', 'gridSize', 'theme', 'currentTurn', 'deck', 'flipped',
         'matched', 'matchedBy', 'winner', 'players', 'createdAt',
         'turnUpdatedAt', 'playAgainRequestedBy', 'reaction'
       ];
@@ -118,6 +123,7 @@ service cloud.firestore {
              isValidRoomCode(d.code) &&
              isValidStatus(d.status) &&
              isValidGridSize(d.gridSize) &&
+             isValidTheme(d.theme) &&
              isValidTurn(d.currentTurn) &&
              d.deck is list && d.deck.size() >= 12 && d.deck.size() <= 80 &&
              d.flipped is list && d.flipped.size() <= 2 &&

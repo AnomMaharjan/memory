@@ -10,7 +10,7 @@ import ReactionPicker from '../components/ReactionPicker';
 import ReactionOverlay from '../components/ReactionOverlay';
 import ParticleBackground from '../components/ParticleBackground';
 import { soundManager } from '../utils/sound';
-import { DIFFICULTY_CONFIG, GAME_MODES, createDeck } from '../utils/deck';
+import { DIFFICULTY_CONFIG, GAME_MODES, THEMES, createDeck } from '../utils/deck';
 
 // ─────────────────────────────────────────────────────────────
 // Single Player Game
@@ -19,8 +19,10 @@ function SoloGame({ navigate }) {
   const location = useLocation();
   const difficulty = location.state?.difficulty ?? 'easy';
   const gameMode = location.state?.gameMode ?? 'classic';
+  const theme = location.state?.theme ?? 'classic';
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.easy;
   const modeCfg = GAME_MODES[gameMode] ?? GAME_MODES.classic;
+  const themeCfg = THEMES[theme] ?? THEMES.classic;
 
   const {
     deck, flipped, matched, moves,
@@ -28,14 +30,14 @@ function SoloGame({ navigate }) {
     streak, bestStreak, score, timeBonus,
     isPeeking, peekCountdown,
     flipCard, restart,
-  } = useGame(difficulty, gameMode);
+  } = useGame(difficulty, gameMode, theme);
 
   const matchedCount = matched.size;
   const totalPairs = deck.length / 2;
   const showModal = won || gameOver;
 
   return (
-    <div className="game-layout">
+    <div className={`game-layout theme-layout-${theme}`}>
       <ParticleBackground />
 
       <header className="game-header">
@@ -45,6 +47,9 @@ function SoloGame({ navigate }) {
             <h1 className="game-title">Solo Mode</h1>
             <span className={`game-mode-badge game-mode-badge--${gameMode}`}>
               {modeCfg.icon} {modeCfg.name}
+            </span>
+            <span className="game-theme-badge">
+              {themeCfg.icon} {themeCfg.name}
             </span>
           </div>
           <span className={`difficulty-badge difficulty-badge--${difficulty}`}>{cfg.label} · {cfg.grid}</span>
@@ -102,6 +107,7 @@ function SoloGame({ navigate }) {
           matched={matched}
           onFlip={flipCard}
           gridSize={difficulty}
+          theme={theme}
         />
       </main>
 
@@ -186,7 +192,7 @@ function MultiGame({ roomId, navigate }) {
   };
 
   const handleAcceptPlayAgain = async () => {
-    const newDeck = createDeck(roomData.gridSize);
+    const newDeck = createDeck(roomData.gridSize, roomData.theme || 'classic');
     await acceptPlayAgain(newDeck);
   };
 
@@ -437,6 +443,7 @@ function MultiGame({ roomId, navigate }) {
               matchedBy={matchedBy}
               onFlip={flipCard}
               gridSize={roomData.gridSize}
+              theme={roomData.theme || 'classic'}
             />
           </main>
 
