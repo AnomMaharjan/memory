@@ -65,7 +65,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
         if (t <= 1) {
           clearInterval(timerRef.current);
           setGameOver(true);
-          soundManager.playGameOver();
+          soundManager.playGameOver?.();
           return 0;
         }
         return t - 1;
@@ -79,7 +79,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
     if (matched.size === totalPairs && totalPairs > 0) {
       clearInterval(timerRef.current);
       setWon(true);
-      soundManager.playVictory();
+      soundManager.playVictory?.();
     }
   }, [matched.size, totalPairs]);
 
@@ -89,7 +89,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
     if (matched.has(deck[index].pairId)) return;
     if (gameOver || won) return;
 
-    soundManager.playCardFlip();
+    soundManager.playCardFlip?.();
     const newFlipped = [...flipped, index];
     setFlipped(newFlipped);
 
@@ -100,7 +100,7 @@ export function useGame(difficulty = 'easy', gameMode = 'classic') {
       const [a, b] = newFlipped;
       if (deck[a].pairId === deck[b].pairId) {
         // Match!
-        soundManager.playMatchSuccess();
+        soundManager.playMatchSuccess?.();
         setMatched(prev => new Set([...prev, deck[a].pairId]));
         setFlipped([]);
         setDisabled(false);
