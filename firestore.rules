@@ -1,0 +1,179 @@
+// ===============================================================
+// Data Model: Memory Game (Supports 2–4 Players + Reactions)
+// ===============================================================
+//
+// Collection: rooms
+// Document ID: 6-character alphanumeric room code (e.g. "AB3X7K")
+// Fields:
+//   - code: string (required, 6 chars) - room code, immutable
+//   - status: string (required) - "waiting" | "playing" | "finished" | "play_again_requested"
+//   - gridSize: string (required) - "easy" | "medium" | "hard"
+//   - currentTurn: string (required) - "player1" | "player2" | "player3" | "player4"
+//   - deck: list (required, 16–64 items) - array of card objects
+//   - flipped: list (required, max 2 items) - indices of currently face-up cards
+//   - matched: list (required, max 32 items) - pairIds that are matched
+//   - matchedBy: map (optional) - { [pairId]: role }
+//   - winner: string | null (optional) - "player1" | "player2" | "player3" | "player4" | "draw"
+//   - createdAt: string (required, immutable) - ISO 8601 timestamp string
+//   - turnUpdatedAt: string (required) - ISO 8601 timestamp string
+//   - playAgainRequestedBy: string | null (optional)
+//   - reaction: map | null (optional) - { id, senderRole, senderName, emoji, timestamp }
+//   - players: map (required) - {
+//       player1: { name: string (max 20), score: number },
+//       player2?: { name: string (max 20), score: number },
+//       player3?: { name: string (max 20), score: number },
+//       player4?: { name: string (max 20), score: number },
+//     }
+// ===============================================================
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper Functions ────────────────────────────────────────
+
+    // Validate a player name: non-empty string, max 20 chars
+    function isValidPlayerName(name) {
+      return name is string && name.size() > 0 && name.size() <= 20;
+    }
+
+    // Validate status enum
+    function isValidStatus(s) {
+      return s is string && s in ['waiting', 'playing', 'finished', 'play_again_requested'];
+    }
+
+    // Validate turn enum
+    function isValidTurn(t) {
+      return t is string && t in ['player1', 'player2', 'player3', 'player4'];
+    }
+
+    // Validate grid size enum
+    function isValidGridSize(g) {
+      return g is string && g in ['easy', 'medium', 'hard'];
+    }
+
+    // Validate winner field: null or one of the allowed values
+    function isValidWinner(w) {
+      return w == null || w in ['player1', 'player2', 'player3', 'player4', 'draw'];
+    }
+
+    // Validate the room code format: exactly 6 uppercase alphanumeric chars
+    function isValidRoomCode(code) {
+      return code is string &&
+             code.size() == 6 &&
+             code.matches('^[A-Z0-9]{6}$');
+    }
+
+    // Validate player score: 0–32 (max pairs in hard mode)
+    function isValidPlayer(p) {
+      return p == null || (
+        p is map &&
+        p.keys().hasAll(['name', 'score']) &&
+        p.keys().hasOnly(['name', 'score']) &&
+        isValidPlayerName(p.name) &&
+        p.score is number &&
+        p.score >= 0 &&
+        p.score <= 32
+      );
+    }
+
+    // Validate the players map top-level structure (1 to 4 players)
+    function isValidPlayersMap(players) {
+      return players is map &&
+             players.keys().size() >= 1 &&
+             players.keys().size() <= 4 &&
+             (!('player1' in players) || isValidPlayer(players.player1)) &&
+             (!('player2' in players) || isValidPlayer(players.player2)) &&
+             (!('player3' in players) || isValidPlayer(players.player3)) &&
+             (!('player4' in players) || isValidPlayer(players.player4));
+    }
+
+    // Validate optional reaction payload
+    function isValidReaction(r) {
+      return r == null || (
+        r is map &&
+        r.keys().hasAll(['id', 'senderRole', 'senderName', 'emoji', 'timestamp']) &&
+        r.senderRole is string && r.senderRole in ['player1', 'player2', 'player3', 'player4'] &&
+        isValidPlayerName(r.senderName) &&
+        r.emoji is string && r.emoji.size() > 0 && r.emoji.size() <= 10 &&
+        r.timestamp is number
+      );
+    }
+
+    // Allowed top-level fields for room documents
+    function allowedRoomKeys() {
+      return [
+        'code', 'status', 'gridSize', 'currentTurn', 'deck', 'flipped',
+        'matched', 'matchedBy', 'winner', 'players', 'createdAt',
+        'turnUpdatedAt', 'playAgainRequestedBy', 'reaction'
+      ];
+    }
+
+    // Validate the full room document on creation
+    function isValidRoomCreate() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['code','status','gridSize','currentTurn','deck','flipped','matched','winner','players','createdAt','turnUpdatedAt']) &&
+             d.keys().hasOnly(allowedRoomKeys()) &&
+             isValidRoomCode(d.code) &&
+             isValidStatus(d.status) &&
+             isValidGridSize(d.gridSize) &&
+             isValidTurn(d.currentTurn) &&
+             d.deck is list && d.deck.size() >= 16 && d.deck.size() <= 64 &&
+             d.flipped is list && d.flipped.size() <= 2 &&
+             d.matched is list && d.matched.size() <= 32 &&
+             isValidWinner(d.winner) &&
+             isValidPlayersMap(d.players) &&
+             d.createdAt is string && d.createdAt.size() > 0 && d.createdAt.size() <= 50 &&
+             d.turnUpdatedAt is string && d.turnUpdatedAt.size() > 0 && d.turnUpdatedAt.size() <= 50 &&
+             (!('reaction' in d) || isValidReaction(d.reaction));
+    }
+
+    // Validate a room update — more permissive since game progresses
+    function isValidRoomUpdate() {
+      let d = request.resource.data;
+      let prev = resource.data;
+      return
+        d.keys().hasOnly(allowedRoomKeys()) &&
+        // Immutable fields must not change
+        d.code == prev.code &&
+        d.gridSize == prev.gridSize &&
+        d.createdAt == prev.createdAt &&
+        // Status validity
+        isValidStatus(d.status) &&
+        // Turn must be valid
+        isValidTurn(d.currentTurn) &&
+        // Flipped/matched must be valid lists
+        d.flipped is list && d.flipped.size() <= 2 &&
+        d.matched is list && d.matched.size() <= 32 &&
+        // Winner valid
+        isValidWinner(d.winner) &&
+        // Players map valid
+        isValidPlayersMap(d.players) &&
+        // turnUpdatedAt valid
+        d.turnUpdatedAt is string && d.turnUpdatedAt.size() > 0 && d.turnUpdatedAt.size() <= 50 &&
+        (!('reaction' in d) || isValidReaction(d.reaction));
+    }
+
+    // ── rooms collection ────────────────────────────────────────
+    match /rooms/{roomId} {
+
+      // Anyone can read a room (needed to join by code)
+      allow read: if true;
+
+      // Anyone can create a room with a valid payload
+      allow create: if isValidRoomCreate();
+
+      // Anyone can update a room (all active players mutate game state)
+      allow update: if isValidRoomUpdate();
+
+      // Anyone can delete a room (leave room / cleanup)
+      allow delete: if true;
+    }
+
+    // Deny all other paths by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
