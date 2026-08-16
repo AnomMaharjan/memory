@@ -315,17 +315,34 @@ function MultiGame({ roomId, navigate }) {
       {isWaiting && (
         <div className="waiting-screen fade-in">
           <div className="waiting-header">
-            <h2 className="waiting-title">Room Lobby</h2>
-            <p className="waiting-desc">Share code with friends (supports up to 4 players):</p>
-            <div className="room-code-large" id="room-code-share">{code}</div>
-            <div className="lobby-actions-row">
-              <button
-                id="btn-copy-code"
-                className={`btn ${copied ? 'btn-primary' : 'btn-outline'}`}
-                onClick={handleCopyCode}
-              >
-                {copied ? '✅ Copied!' : '📋 Copy Code'}
-              </button>
+            <div className="lobby-badge">⚔️ Match Lobby</div>
+            <h2 className="waiting-title">Room {code}</h2>
+            <p className="waiting-desc">Share this code with friends to join your match (up to 4 players):</p>
+            
+            <div className="waiting-room-code-card">
+              <div className="room-code-large" id="room-code-share">{code}</div>
+              <div className="lobby-actions-row">
+                <button
+                  id="btn-copy-code"
+                  className={`btn ${copied ? 'btn-primary' : 'btn-outline'} btn-copy-hero`}
+                  onClick={handleCopyCode}
+                  title="Copy room code to clipboard"
+                >
+                  {copied ? '✅ Code Copied!' : '📋 Copy Room Code'}
+                </button>
+              </div>
+            </div>
+
+            <div className="waiting-match-meta">
+              <span className="meta-pill">
+                {THEMES[roomData?.theme]?.icon || '✨'} {THEMES[roomData?.theme]?.name || 'Classic'}
+              </span>
+              <span className="meta-pill">
+                {cfg.label} ({cfg.grid})
+              </span>
+              <span className="meta-pill">
+                ⏱️ {cfg.turnTime || 10}s Turns
+              </span>
             </div>
           </div>
 
@@ -347,12 +364,12 @@ function MultiGame({ roomId, navigate }) {
                   </div>
 
                   <div className="slot-avatar">
-                    {player ? player.name.charAt(0).toUpperCase() : '👤'}
+                    {player ? player.name.charAt(0).toUpperCase() : '+'}
                   </div>
 
                   <div className="slot-info">
                     <span className="slot-name">
-                      {player ? player.name : 'Waiting for player...'}
+                      {player ? player.name : 'Open Slot'}
                     </span>
                     {player && isCurrentMe && (
                       <span className="slot-me-tag">You</span>
@@ -363,7 +380,14 @@ function MultiGame({ roomId, navigate }) {
                     {player ? (
                       <span className="status-pill status-pill--ready">● Ready</span>
                     ) : (
-                      <span className="status-pill status-pill--waiting">○ Open</span>
+                      <button
+                        type="button"
+                        className="slot-invite-btn"
+                        onClick={handleCopyCode}
+                        title="Copy code to invite"
+                      >
+                        + Invite
+                      </button>
                     )}
                   </div>
                 </div>
@@ -377,21 +401,21 @@ function MultiGame({ roomId, navigate }) {
               <div className="host-start-controls">
                 <button
                   id="btn-start-game"
-                  className="btn btn-primary btn-lg"
+                  className="btn btn-primary btn-lg btn-start-match-hero"
                   onClick={handleStartGame}
                   disabled={playersList.length < 2}
                 >
-                  ⚔️ Start Game ({playersList.length}/4 Players)
+                  ⚔️ Start Duel ({playersList.length}/4 Ready)
                 </button>
                 {playersList.length < 2 && (
-                  <p className="waiting-subhint">Need at least 2 players to begin.</p>
+                  <p className="waiting-subhint">Waiting for at least 1 more player to join...</p>
                 )}
               </div>
             ) : (
               <div className="guest-waiting-controls">
                 <div className="waiting-spinner" aria-label="Waiting for host" />
                 <p className="waiting-guest-text">
-                  Waiting for host to start… ({playersList.length}/4 players ready)
+                  Waiting for host to start the match… ({playersList.length}/4 players ready)
                 </p>
               </div>
             )}

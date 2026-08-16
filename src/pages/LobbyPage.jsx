@@ -198,9 +198,9 @@ function LobbyPage() {
 
         {/* Lobby Hero Header */}
         <div className="lobby-hero">
-          <div className="lobby-badge">⚔️ Multiplayer Arena</div>
-          <h1 className="lobby-title">Versus Mode</h1>
-          <p className="lobby-desc">Battle friends in real-time memory duels with up to 4 players</p>
+          <div className="lobby-badge">⚔️ Real-Time Duel Arena</div>
+          <h1 className="lobby-title">Dual Mode Lobby</h1>
+          <p className="lobby-desc">Battle friends in live head-to-head memory matches with up to 4 players</p>
         </div>
 
         {/* Card Container */}
@@ -238,7 +238,7 @@ function LobbyPage() {
                 id="player-name-input"
                 className="form-input form-input--hero"
                 type="text"
-                placeholder="Enter your name (e.g. Alex)"
+                placeholder="Enter your nickname..."
                 maxLength={20}
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
@@ -258,7 +258,7 @@ function LobbyPage() {
               {/* Board Theme Selection */}
               <div className="form-group">
                 <div className="form-label-row">
-                  <label className="form-label">Board Theme</label>
+                  <label className="form-label">Card Theme</label>
                   <span className="form-hint">{THEMES[theme]?.name} ({THEMES[theme]?.cardBack} Cards)</span>
                 </div>
                 <div className="themes-grid">
@@ -276,6 +276,7 @@ function LobbyPage() {
                           '--t-border': t.border,
                         } : {}}
                         onClick={() => setTheme(t.key)}
+                        title={`${t.name} (${t.cardBack})`}
                       >
                         <span className="theme-card-icon">{t.icon}</span>
                         <div className="theme-card-info">
@@ -290,18 +291,18 @@ function LobbyPage() {
               {/* Grid Difficulty Selection */}
               <div className="form-group">
                 <div className="form-label-row">
-                  <label className="form-label">Game Board Difficulty</label>
-                  <span className="form-hint">Choose grid complexity</span>
+                  <label className="form-label">Grid Difficulty</label>
+                  <span className="form-hint">Choose grid size</span>
                 </div>
 
-                <div className="difficulty-card-group">
+                <div className="difficulty-grid-cards">
                   {[
-                    { key: 'quick', icon: '🌱', title: 'Quick', subtitle: '4×3 Grid · 6 Pairs' },
-                    { key: 'easy', icon: '🌿', title: 'Easy', subtitle: '4×4 Grid · 8 Pairs' },
-                    { key: 'medium', icon: '⚡', title: 'Medium', subtitle: '6×6 Grid · 18 Pairs' },
-                    { key: 'hard', icon: '🔥', title: 'Hard', subtitle: '8×8 Grid · 32 Pairs' },
-                    { key: 'master', icon: '💀', title: 'Master', subtitle: '10×8 Grid · 40 Pairs' },
-                  ].map(({ key, icon, title, subtitle }) => {
+                    { key: 'quick', icon: '🌱', title: 'Quick', grid: '4×3', pairs: '6 Pairs' },
+                    { key: 'easy', icon: '🌿', title: 'Easy', grid: '4×4', pairs: '8 Pairs' },
+                    { key: 'medium', icon: '⚡', title: 'Medium', grid: '6×6', pairs: '18 Pairs' },
+                    { key: 'hard', icon: '🔥', title: 'Hard', grid: '8×8', pairs: '32 Pairs' },
+                    { key: 'master', icon: '💀', title: 'Master', grid: '10×8', pairs: '40 Pairs' },
+                  ].map(({ key, icon, title, grid, pairs }) => {
                     const isSelected = gridSize === key;
                     return (
                       <button
@@ -314,7 +315,7 @@ function LobbyPage() {
                         <div className="choice-icon">{icon}</div>
                         <div className="choice-details">
                           <span className="choice-title">{title}</span>
-                          <span className="choice-sub">{subtitle}</span>
+                          <span className="choice-sub">{grid} · {pairs}</span>
                         </div>
                         <div className="choice-radio">
                           {isSelected && <div className="choice-radio-dot" />}
