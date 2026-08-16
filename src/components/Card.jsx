@@ -24,6 +24,7 @@ const Card = memo(function Card({ card, isFlipped, isMatched, matchedBy, cardBac
       style={{
         '--delay': `${delay}ms`,
         '--card-i': card.index,
+        '--shimmer-delay': `${(card.index % 8) * 0.35}s`,
       }}
       onClick={handleClick}
       role="button"

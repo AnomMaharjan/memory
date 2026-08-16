@@ -1480,7 +1480,7 @@ body {
   pointer-events: none;
   transform: translateX(-160%) translateY(-160%) rotate(45deg);
   animation: holographicShimmer 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  animation-delay: calc((var(--card-i, 0) % 7) * 0.4s);
+  animation-delay: var(--shimmer-delay, 0s);
   z-index: 1;
 }
 
