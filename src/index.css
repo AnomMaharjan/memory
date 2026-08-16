@@ -1423,28 +1423,6 @@ body {
   justify-content: center;
 }
 
-/* Holographic Shimmer Sweep Animation for Unturned Cards */
-@keyframes holographicShimmer {
-  0% {
-    transform: translateX(-160%) translateY(-160%) rotate(45deg);
-    opacity: 0;
-  }
-
-  20% {
-    opacity: 0.75;
-  }
-
-  45% {
-    transform: translateX(160%) translateY(160%) rotate(45deg);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateX(160%) translateY(160%) rotate(45deg);
-    opacity: 0;
-  }
-}
-
 /* Card back */
 .card-back {
   background: linear-gradient(135deg, #181d33, #0f1322);
@@ -1463,25 +1441,6 @@ body {
   inset: 0;
   background: radial-gradient(circle at center, var(--theme-glow, rgba(124, 106, 245, 0.08)), transparent 70%);
   pointer-events: none;
-}
-
-/* Holographic shimmer beam across unturned cards */
-.card-shimmer-sweep {
-  position: absolute;
-  inset: -60%;
-  width: 220%;
-  height: 220%;
-  background: linear-gradient(135deg,
-      transparent 35%,
-      rgba(255, 255, 255, 0.06) 44%,
-      rgba(255, 255, 255, 0.35) 50%,
-      var(--theme-color, rgba(124, 106, 245, 0.4)) 56%,
-      transparent 65%);
-  pointer-events: none;
-  transform: translateX(-160%) translateY(-160%) rotate(45deg);
-  animation: holographicShimmer 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  animation-delay: var(--shimmer-delay, 0s);
-  z-index: 1;
 }
 
 .card-wrapper:not(.is-flipped):not(.is-matched):hover .card-back {

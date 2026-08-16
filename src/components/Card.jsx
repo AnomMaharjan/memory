@@ -24,7 +24,6 @@ const Card = memo(function Card({ card, isFlipped, isMatched, matchedBy, cardBac
       style={{
         '--delay': `${delay}ms`,
         '--card-i': card.index,
-        '--shimmer-delay': `${(card.index % 8) * 0.35}s`,
       }}
       onClick={handleClick}
       role="button"
@@ -33,14 +32,13 @@ const Card = memo(function Card({ card, isFlipped, isMatched, matchedBy, cardBac
       onKeyDown={(e) => e.key === 'Enter' && handleClick()}
     >
       <div className="card-inner">
-        {/* Card Back (Unturned with holographic shimmer) */}
+        {/* Card Back (Unturned) */}
         <div className="card-face card-back">
-          <div className="card-shimmer-sweep" aria-hidden="true" />
           <div className="card-back-pattern">
             <span className="card-back-symbol">{cardBack}</span>
             <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="card-back-svg">
-              <circle cx="30" cy="30" r="22" stroke="currentColor" strokeWidth="1.2" strokeDasharray="3 3" opacity="0.35"/>
-              <circle cx="30" cy="30" r="14" stroke="currentColor" strokeWidth="0.8" opacity="0.25"/>
+              <circle cx="30" cy="30" r="22" stroke="currentColor" strokeWidth="1.2" strokeDasharray="3 3" opacity="0.35" />
+              <circle cx="30" cy="30" r="14" stroke="currentColor" strokeWidth="0.8" opacity="0.25" />
             </svg>
           </div>
         </div>

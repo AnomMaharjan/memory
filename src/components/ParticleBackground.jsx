@@ -24,14 +24,15 @@ function ParticleBackground({ activeColor }) {
     resize();
     window.addEventListener('resize', resize);
 
-    const NUM_PARTICLES = 55;
+    const isMobile = window.innerWidth < 768;
+    const NUM_PARTICLES = isMobile ? 14 : 32;
     const particles = Array.from({ length: NUM_PARTICLES }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 180 + 40,
+      r: Math.random() * (isMobile ? 100 : 160) + 30,
       vx: (Math.random() - 0.5) * 0.15,
       vy: (Math.random() - 0.5) * 0.15,
-      alpha: Math.random() * 0.06 + 0.02,
+      alpha: Math.random() * 0.05 + 0.02,
       hue: Math.random() < 0.5 ? 250 : 180, // initial
     }));
 
