@@ -85,12 +85,22 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Particle Canvas ──────────────────────────────────────── */
+/* ── Particle Canvas & Mobile Background ─────────────────── */
 .particle-canvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+}
+
+.particle-mobile-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 25% 25%, rgba(124, 106, 245, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 75% 75%, rgba(79, 209, 197, 0.06) 0%, transparent 60%);
 }
 
 .confetti-canvas {
@@ -247,8 +257,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+  padding: 1.5rem 1.5rem 1rem;
   text-align: center;
   max-width: 900px;
   width: 100%;
@@ -617,6 +627,12 @@ body {
   border: 1px solid rgba(245, 101, 101, 0.3);
 }
 
+.difficulty-badge--expert {
+  background: rgba(237, 137, 54, 0.18);
+  color: #f6ad55;
+  border: 1px solid rgba(237, 137, 54, 0.35);
+}
+
 
 
 /* ============================================================
@@ -625,7 +641,7 @@ body {
 .lobby-page {
   background: var(--bg);
   min-height: 100dvh;
-  padding: 1.5rem 1rem;
+  padding: 0.85rem 1rem 0.5rem;
 }
 
 .lobby-content {
@@ -636,7 +652,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.75rem;
   text-align: center;
   margin: 0 auto;
 }
@@ -645,18 +661,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.2rem;
 }
 
 .lobby-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.25rem 0.8rem;
+  padding: 0.2rem 0.7rem;
   background: rgba(124, 106, 245, 0.15);
   border: 1px solid rgba(124, 106, 245, 0.35);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #b3a5ff;
   letter-spacing: 0.05em;
@@ -665,7 +681,7 @@ body {
 
 .lobby-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-size: clamp(1.7rem, 4vw, 2.1rem);
   font-weight: 800;
   background: linear-gradient(135deg, #ffffff, #c4bbf9);
   -webkit-background-clip: text;
@@ -675,9 +691,9 @@ body {
 
 .lobby-desc {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   max-width: 440px;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 /* ── Lobby Main Glass Card ──────────────────────────────────── */
@@ -686,13 +702,13 @@ body {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   border: 1.5px solid var(--border-2);
   border-radius: var(--radius-xl);
-  padding: 1.75rem 1.75rem 1.5rem;
+  padding: 1.25rem 1.25rem 0.9rem;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.85rem;
 }
 
 /* Tab Switcher */
@@ -815,8 +831,8 @@ body {
 
 /* ── Difficulty Choice Cards ─────────────────────────────────── */
 .difficulty-card-group {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.55rem;
   text-align: left;
 }
@@ -824,8 +840,8 @@ body {
 .difficulty-choice-card {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.8rem 1rem;
+  gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
@@ -835,6 +851,7 @@ body {
   transition: all var(--duration-fast) var(--ease-spring);
   position: relative;
   text-align: left;
+  user-select: none;
 }
 
 .difficulty-choice-card:hover {
@@ -844,26 +861,33 @@ body {
 }
 
 .difficulty-choice-card.is-selected {
-  background: rgba(124, 106, 245, 0.12);
+  background: rgba(124, 106, 245, 0.14);
   border-color: var(--accent);
-  box-shadow: 0 4px 20px var(--accent-glow);
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
 .difficulty-choice-card--easy.is-selected {
-  background: rgba(72, 187, 120, 0.12);
+  background: rgba(72, 187, 120, 0.14);
   border-color: var(--success);
-  box-shadow: 0 4px 20px rgba(72, 187, 120, 0.25);
+  box-shadow: 0 4px 16px rgba(72, 187, 120, 0.25);
 }
 
 .difficulty-choice-card--hard.is-selected {
-  background: rgba(245, 101, 101, 0.12);
+  background: rgba(245, 101, 101, 0.14);
   border-color: var(--danger);
-  box-shadow: 0 4px 20px rgba(245, 101, 101, 0.25);
+  box-shadow: 0 4px 16px rgba(245, 101, 101, 0.25);
+}
+
+.difficulty-choice-card--expert.is-selected {
+  background: rgba(237, 137, 54, 0.14);
+  border-color: #ed8936;
+  box-shadow: 0 4px 16px rgba(237, 137, 54, 0.25);
 }
 
 .choice-icon {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .choice-details {
@@ -871,54 +895,55 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  min-width: 0;
+}
+
+.choice-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem;
 }
 
 .choice-title {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-.choice-sub {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.choice-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--border-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--duration-fast);
-}
-
-.difficulty-choice-card.is-selected .choice-radio {
-  border-color: var(--accent);
-}
-
-.difficulty-choice-card--easy.is-selected .choice-radio {
-  border-color: var(--success);
-}
-
-.difficulty-choice-card--hard.is-selected .choice-radio {
-  border-color: var(--danger);
-}
-
-.choice-radio-dot {
-  width: 10px;
-  height: 10px;
+.choice-check {
+  font-size: 0.7rem;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.difficulty-choice-card--easy.is-selected .choice-radio-dot {
+.difficulty-choice-card--easy .choice-check {
   background: var(--success);
 }
 
-.difficulty-choice-card--hard.is-selected .choice-radio-dot {
+.difficulty-choice-card--hard .choice-check {
   background: var(--danger);
+}
+
+.difficulty-choice-card--expert .choice-check {
+  background: #ed8936;
+}
+
+.choice-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Join Room Inputs ────────────────────────────────────────── */
@@ -1162,7 +1187,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(0.5rem, 1.5vmin, 1rem);
+  padding: clamp(0.2rem, 0.8vmin, 0.4rem);
+  padding-bottom: clamp(0.3rem, 1vmin, 0.6rem);
   position: relative;
   z-index: 2;
 }
@@ -1171,18 +1197,17 @@ body {
    GAME BOARD
    ============================================================ */
 .game-board {
-  --gap: clamp(5px, 1.2vmin, 12px);
+  --gap: clamp(3px, 0.9vmin, 8px);
   display: grid;
   grid-template-columns: repeat(var(--cols, 4), 1fr);
   gap: var(--gap);
   /*
-   * Board is a square that fits within the available space:
+   * Board is sized to fit within the available space:
    *   - horizontally: 100vw minus side padding
-   *   - vertically:   100dvh minus header (~60px) minus panel (~70px) minus padding (~24px)
-   * We take the smaller of the two to guarantee it always fits.
+   *   - vertically:   100dvh minus header minus panel minus padding
    */
-  width: min(calc(100vw - 2rem),
-      calc(100dvh - var(--header-h) - var(--panel-h) - 3rem));
+  width: min(calc(100vw - 1.2rem),
+      calc((100dvh - var(--header-h) - var(--panel-h) - 1.4rem) * (var(--cols, 4) / var(--rows, var(--cols, 4)))));
   aspect-ratio: var(--cols, 4) / var(--rows, var(--cols, 4));
 }
 
@@ -1197,6 +1222,10 @@ body {
   animation: cardDrop 0.5s var(--ease-spring) both;
   animation-delay: var(--delay, 0ms);
   border-radius: var(--radius-md);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .card-inner {
@@ -1206,6 +1235,8 @@ body {
   transform-style: preserve-3d;
   transition: transform 0.55s var(--ease-spring);
   border-radius: var(--radius-md);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .card-wrapper.is-flipped .card-inner {
@@ -1221,6 +1252,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  container-type: inline-size;
 }
 
 /* Card back */
@@ -1265,10 +1299,15 @@ body {
 }
 
 .card-emoji {
-  font-size: clamp(1.1rem, 4vmin, 2.2rem);
+  font-size: clamp(0.85rem, 42cqi, 2.8rem);
   line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   transition: transform var(--duration-fast) var(--ease-spring);
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Matched state */
@@ -1600,75 +1639,157 @@ body {
 }
 
 /* ============================================================
-   REACTION DOCK & TRAY
+   REACTION FAB & POPUP (Bottom-Right Floating Trigger)
    ============================================================ */
-.reaction-dock-container {
+.reaction-fab-container {
   position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 90;
+  bottom: 24px;
+  right: 24px;
+  z-index: 130;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+/* FAB Button */
+.reaction-fab-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #5b47e0);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  max-width: 95vw;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(124, 106, 245, 0.4), 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all var(--duration-mid) var(--ease-spring);
+  position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.reaction-dock {
-  background: rgba(13, 17, 32, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+.reaction-fab-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(124, 106, 245, 0.55), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.reaction-fab-btn:active {
+  transform: scale(0.92);
+}
+
+.reaction-fab-btn.is-active {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--text);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.fab-icon {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.fab-keys-hint {
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+  margin-top: 1px;
+}
+
+/* Quick Popup Menu above FAB */
+.reaction-quick-popup {
+  background: rgba(13, 17, 32, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1.5px solid var(--border-2);
-  border-radius: 999px;
-  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-lg);
+  padding: 0.65rem 0.75rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(124, 106, 245, 0.15);
   display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
-  transition: all var(--duration-mid) var(--ease-smooth);
+  animation: fadeInUp 0.25s var(--ease-spring) both;
 }
 
-.reaction-dock-label {
-  font-size: 1rem;
-  padding: 0 0.25rem 0 0.35rem;
-  opacity: 0.7;
-}
-
-.reaction-quick-list {
+.quick-popup-header {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.quick-popup-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reaction-more-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.reaction-more-btn:hover,
+.reaction-more-btn.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.reaction-quick-grid {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .reaction-btn {
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 40px;
+  height: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
-  transition: transform var(--duration-fast) var(--ease-spring), background var(--duration-fast);
+  transition: transform var(--duration-fast) var(--ease-spring), background var(--duration-fast), border-color var(--duration-fast);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .reaction-btn:hover {
-  transform: scale(1.22);
+  transform: scale(1.18);
   background: var(--surface-2);
+  border-color: var(--accent);
+  z-index: 2;
 }
 
 .reaction-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .reaction-emoji {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   line-height: 1;
 }
 
@@ -1678,30 +1799,7 @@ body {
   color: var(--text-faint);
   position: absolute;
   bottom: 1px;
-  right: 4px;
-}
-
-.reaction-expand-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-spring);
-}
-
-.reaction-expand-btn:hover,
-.reaction-expand-btn.is-active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-  transform: scale(1.1);
+  right: 3px;
 }
 
 .cooldown-bar {
@@ -1711,19 +1809,31 @@ body {
   height: 3px;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   border-radius: 0 0 999px 999px;
-  transition: width 30ms linear;
+  animation: cooldownDrain 0.8s linear forwards;
+  pointer-events: none;
+}
+
+@keyframes cooldownDrain {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }
 
 .reaction-tray-expanded {
-  background: rgba(13, 17, 32, 0.94);
+  background: rgba(13, 17, 32, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1.5px solid var(--border-2);
   border-radius: var(--radius-lg);
   padding: 0.85rem;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-  width: 320px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 25px rgba(124, 106, 245, 0.2);
+  width: 290px;
   max-width: 90vw;
+  animation: fadeInUp 0.25s var(--ease-spring) both;
 }
 
 .tray-header {
@@ -1774,6 +1884,7 @@ body {
   color: var(--text-muted);
 }
 
+
 /* ============================================================
    REACTION OVERLAY, FLOATING PARTICLES & TOAST ALERTS
    ============================================================ */
@@ -1794,7 +1905,9 @@ body {
   position: absolute;
   bottom: 80px;
   animation: floatEmojiUp cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
   user-select: none;
 }
 
@@ -1908,9 +2021,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
   text-align: center;
-  padding: 2rem 1.5rem;
+  padding: 1.25rem 1.5rem 1.2rem;
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
@@ -2379,6 +2492,47 @@ body {
 
 /* ── Tablet (max 768px) ────────────────────────────────────── */
 @media (max-width: 768px) {
+
+  /* Mobile GPU performance: eliminate expensive backdrop-filter compositing */
+  .mode-card,
+  .score-panel,
+  .lobby-form,
+  .reaction-tray-expanded,
+  .lobby-slot-card,
+  .modal-content,
+  .tease-toast {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .mode-card {
+    background: #14192b;
+  }
+
+  .score-panel {
+    background: #0c1020;
+  }
+
+  .lobby-form {
+    background: #14192b;
+  }
+
+  .lobby-slot-card {
+    background: #12182b;
+  }
+
+  .modal-content {
+    background: #12182b;
+  }
+
+  .tease-toast {
+    background: #0d1120;
+  }
+
+  .card-back {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
   .landing-title {
     font-size: clamp(2.2rem, 8vw, 3.5rem);
   }
@@ -2389,16 +2543,16 @@ body {
   }
 
   .lobby-content {
-    padding: 1.5rem 1rem;
-    gap: 1.25rem;
+    padding: 0.75rem 0.5rem;
+    gap: 0.75rem;
   }
 
-  .lobby-form {
-    padding: 1.5rem 1.25rem;
+  .lobby-main-card {
+    padding: 1.15rem 1rem 0.85rem;
   }
 
   .lobby-title {
-    font-size: 1.8rem;
+    font-size: 1.65rem;
   }
 
   /* Tighten header on tablet */
@@ -2502,12 +2656,16 @@ body {
 
   /* Board gap tighter */
   .game-board {
-    --gap: 4px;
+    --gap: 3.5px;
   }
 
-  /* Card emoji smaller on mobile */
+  .game-board[data-grid="expert"] {
+    --gap: 2.5px;
+  }
+
+  /* Card emoji sizing on mobile */
   .card-emoji {
-    font-size: clamp(1rem, 5vmin, 1.8rem);
+    font-size: clamp(0.75rem, 42cqi, 2.4rem);
   }
 
   /* Card corners tighter */
@@ -2599,12 +2757,56 @@ body {
     font-size: 0.88rem;
   }
 
-  .lobby-form {
-    padding: 1.25rem 1rem;
+  .lobby-main-card {
+    padding: 1rem 0.85rem 0.75rem;
+    border-radius: var(--radius-lg);
+    gap: 0.75rem;
   }
 
-  .form-input--code {
-    font-size: 1.1rem;
-    letter-spacing: 0.18em;
+  .difficulty-choice-card {
+    padding: 0.55rem 0.65rem;
+    gap: 0.5rem;
+  }
+
+  .choice-icon {
+    font-size: 1.25rem;
+  }
+
+  .choice-title {
+    font-size: 0.82rem;
+  }
+
+  .choice-sub {
+    font-size: 0.65rem;
+  }
+
+  /* Floating Reaction FAB on mobile */
+  .reaction-fab-container {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .reaction-fab-btn {
+    width: 46px;
+    height: 46px;
+  }
+
+  .fab-icon {
+    font-size: 1.3rem;
+  }
+
+  .reaction-quick-popup {
+    max-width: calc(100vw - 28px);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE EXPERT GRID (8 cols × 10 rows on mobile / portrait)
+   ============================================================ */
+@media (max-width: 768px),
+(orientation: portrait) {
+  .game-board[data-grid="expert"] {
+    --cols: 8 !important;
+    --rows: 10 !important;
   }
 }

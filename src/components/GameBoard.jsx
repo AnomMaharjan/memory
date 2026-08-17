@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Card from './Card';
 import { getGridCols } from '../utils/deck';
 
@@ -12,13 +12,14 @@ import { getGridCols } from '../utils/deck';
  * @param {function} onFlip   - Callback when a card is clicked
  * @param {string}   gridSize - 'small' (4x4) | 'large' (6x6)
  */
-function GameBoard({ deck, flipped, matched, matchedBy = {}, onFlip, gridSize = 'small' }) {
+const GameBoard = memo(function GameBoard({ deck, flipped, matched, matchedBy = {}, onFlip, gridSize = 'small' }) {
   const cols = getGridCols(gridSize);
   const rows = Math.ceil(deck.length / cols);
 
   return (
     <div
       className="game-board"
+      data-grid={gridSize}
       style={{ '--cols': cols, '--rows': rows }}
       aria-label="Memory game board"
     >
@@ -35,6 +36,6 @@ function GameBoard({ deck, flipped, matched, matchedBy = {}, onFlip, gridSize = 
       ))}
     </div>
   );
-}
+});
 
 export default GameBoard;

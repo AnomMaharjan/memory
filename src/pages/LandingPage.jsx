@@ -25,6 +25,13 @@ const DIFFICULTIES = [
     glow: 'rgba(245,101,101,0.25)',
     border: 'rgba(245,101,101,0.35)',
   },
+  {
+    key: 'expert',
+    icon: '👑',
+    color: '#ed8936',
+    glow: 'rgba(237,137,54,0.25)',
+    border: 'rgba(237,137,54,0.35)',
+  },
 ];
 
 function LandingPage() {

@@ -29,7 +29,7 @@ const Card = memo(function Card({ card, isFlipped, isMatched, matchedBy, onClick
         <div className="card-face card-back">
           <div className="card-back-pattern">
             <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="20" stroke="rgba(124,106,245,0.4)" strokeWidth="1.5" strokeDasharray="4 3"/>
+              <circle cx="30" cy="30" r="20" stroke="rgba(124,106,245,0.4)" strokeWidth="1.5" strokeDasharray="4 3" />
               <circle cx="30" cy="30" r="10" stroke="rgba(79,209,197,0.4)" strokeWidth="1" />
               <circle cx="30" cy="30" r="3" fill="rgba(124,106,245,0.5)" />
             </svg>

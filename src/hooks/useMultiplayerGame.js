@@ -305,7 +305,7 @@ export function useMultiplayerGame(roomId, myRole, myName = 'Player') {
       const updatedTime = new Date(roomData.turnUpdatedAt || Date.now()).getTime();
       const elapsed = (Date.now() - updatedTime) / 1000;
       const left = Math.max(0, 10 - Math.floor(elapsed));
-      setTurnTimeLeft(left);
+      setTurnTimeLeft(prev => (prev === left ? prev : left));
 
       // Auto pass turn if time expires on current player's turn
       if (left === 0 && isMyTurn && !disabledRef.current) {

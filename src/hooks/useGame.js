@@ -23,6 +23,9 @@ export function useGame(difficulty = 'easy') {
   const [disabled, setDisabled] = useState(false);   // block clicks while checking pair
   const timerRef = useRef(null);
 
+  const stateRef = useRef({});
+  stateRef.current = { deck, flipped, matched, disabled, gameOver, won };
+
   const totalPairs = deck.length / 2;
 
   // Countdown timer
@@ -50,12 +53,12 @@ export function useGame(difficulty = 'easy') {
   }, [matched.size, totalPairs]);
 
   const flipCard = useCallback((index) => {
-    if (disabled) return;
-    if (flipped.includes(index)) return;
-    if (matched.has(deck[index].pairId)) return;
-    if (gameOver || won) return;
+    const { deck: currentDeck, flipped: currentFlipped, matched: currentMatched, disabled: isDisabled, gameOver: isOver, won: isWon } = stateRef.current;
+    if (isDisabled || isOver || isWon) return;
+    if (currentFlipped.includes(index)) return;
+    if (currentMatched.has(currentDeck[index]?.pairId)) return;
 
-    const newFlipped = [...flipped, index];
+    const newFlipped = [...currentFlipped, index];
     setFlipped(newFlipped);
 
     if (newFlipped.length === 2) {
@@ -63,9 +66,9 @@ export function useGame(difficulty = 'easy') {
       setDisabled(true);
 
       const [a, b] = newFlipped;
-      if (deck[a].pairId === deck[b].pairId) {
+      if (currentDeck[a].pairId === currentDeck[b].pairId) {
         // Match!
-        setMatched(prev => new Set([...prev, deck[a].pairId]));
+        setMatched(prev => new Set([...prev, currentDeck[a].pairId]));
         setFlipped([]);
         setDisabled(false);
       } else {
@@ -76,7 +79,7 @@ export function useGame(difficulty = 'easy') {
         }, FLIP_DELAY_MS);
       }
     }
-  }, [deck, disabled, flipped, matched, gameOver, won]);
+  }, []);
 
   const restart = useCallback(() => {
     clearInterval(timerRef.current);

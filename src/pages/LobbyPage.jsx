@@ -264,6 +264,7 @@ function LobbyPage() {
                     { key: 'easy', icon: '🌱', title: 'Easy', subtitle: '4×4 Grid · 8 Pairs' },
                     { key: 'medium', icon: '⚡', title: 'Medium', subtitle: '6×6 Grid · 18 Pairs' },
                     { key: 'hard', icon: '🔥', title: 'Hard', subtitle: '8×8 Grid · 32 Pairs' },
+                    { key: 'expert', icon: '👑', title: 'Expert', subtitle: '10×8 Grid · 40 Pairs' },
                   ].map(({ key, icon, title, subtitle }) => {
                     const isSelected = gridSize === key;
                     return (
@@ -276,11 +277,11 @@ function LobbyPage() {
                       >
                         <div className="choice-icon">{icon}</div>
                         <div className="choice-details">
-                          <span className="choice-title">{title}</span>
+                          <div className="choice-title-row">
+                            <span className="choice-title">{title}</span>
+                            {isSelected && <span className="choice-check">✓</span>}
+                          </div>
                           <span className="choice-sub">{subtitle}</span>
-                        </div>
-                        <div className="choice-radio">
-                          {isSelected && <div className="choice-radio-dot" />}
                         </div>
                       </button>
                     );

@@ -29,24 +29,25 @@ function ReactionOverlay({ latestReaction }) {
       setActiveToast(current => (current?.id === latestReaction.id ? null : current));
     }, 2800);
 
-    // Spawn 4-6 floating particles with varied trajectories
-    const particleCount = 5;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const particleCount = isMobile ? 3 : 5;
+    const maxParticles = isMobile ? -6 : -15;
     const baseLeft = Math.random() * 60 + 20; // 20% to 80% screen width
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: `${latestReaction.id}_${i}`,
       emoji,
       left: `${baseLeft + (Math.random() - 0.5) * 20}%`,
-      duration: `${1.8 + Math.random() * 0.8}s`,
-      drift: `${(Math.random() - 0.5) * 80}px`,
-      size: `${clampSize(1.8 + Math.random() * 1.2)}rem`,
-      delay: `${i * 90}ms`,
+      duration: `${1.6 + Math.random() * 0.6}s`,
+      drift: `${(Math.random() - 0.5) * 60}px`,
+      size: `${clampSize(isMobile ? 1.4 + Math.random() * 0.6 : 1.8 + Math.random() * 1.2)}rem`,
+      delay: `${i * 80}ms`,
     }));
 
-    setFloatingParticles(prev => [...prev.slice(-15), ...newParticles]);
+    setFloatingParticles(prev => [...prev.slice(maxParticles), ...newParticles]);
 
     const cleanupTimeout = setTimeout(() => {
       setFloatingParticles(prev => prev.filter(p => !newParticles.some(np => np.id === p.id)));
-    }, 3000);
+    }, 2500);
 
     return () => {
       clearTimeout(toastTimeout);

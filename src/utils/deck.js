@@ -1,8 +1,9 @@
 // Difficulty → grid size mapping
 export const DIFFICULTY_CONFIG = {
-  easy:   { cols: 4, pairs: 8,  label: 'Easy',   grid: '4×4', time: 90  },
-  medium: { cols: 6, pairs: 18, label: 'Medium',  grid: '6×6', time: 150 },
-  hard:   { cols: 8, pairs: 32, label: 'Hard',    grid: '8×8', time: 240 },
+  easy:   { cols: 4,  pairs: 8,  label: 'Easy',   grid: '4×4',  time: 90  },
+  medium: { cols: 6,  pairs: 18, label: 'Medium', grid: '6×6',  time: 150 },
+  hard:   { cols: 8,  pairs: 32, label: 'Hard',   grid: '8×8',  time: 240 },
+  expert: { cols: 10, pairs: 40, label: 'Expert', grid: '10×8', time: 300 },
 };
 
 // 8 pairs for Easy (4×4)
@@ -51,10 +52,24 @@ const SYMBOLS_HARD = [
   { id: 'key',       emoji: '🗝️', label: 'Key'       },
 ];
 
+// 40 pairs for Expert (10×8) — includes all Hard symbols + 8 more (80 cards total)
+const SYMBOLS_EXPERT = [
+  ...SYMBOLS_HARD,
+  { id: 'sword',     emoji: '⚔️', label: 'Sword'     },
+  { id: 'shield',    emoji: '🛡️', label: 'Shield'    },
+  { id: 'rocket',    emoji: '🚀', label: 'Rocket'    },
+  { id: 'lion',      emoji: '🦁', label: 'Lion'      },
+  { id: 'magic',     emoji: '🪄', label: 'Wand'      },
+  { id: 'compass',   emoji: '🧭', label: 'Compass'   },
+  { id: 'anchor',    emoji: '⚓', label: 'Anchor'    },
+  { id: 'sun',       emoji: '☀️', label: 'Sun'       },
+];
+
 const SYMBOL_MAP = {
   easy:   SYMBOLS_EASY,
   medium: SYMBOLS_MEDIUM,
   hard:   SYMBOLS_HARD,
+  expert: SYMBOLS_EXPERT,
 };
 
 /**
