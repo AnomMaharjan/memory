@@ -833,15 +833,16 @@ body {
 .difficulty-card-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.55rem;
+  gap: 0.6rem;
   text-align: left;
+  margin: 0.25rem 0;
 }
 
 .difficulty-choice-card {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.65rem 0.85rem;
+  gap: 0.75rem;
+  padding: 0.9rem 0.95rem;
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
@@ -1187,8 +1188,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(0.2rem, 0.8vmin, 0.4rem);
-  padding-bottom: clamp(0.3rem, 1vmin, 0.6rem);
+  padding: clamp(0.5rem, 1.5vmin, 1rem);
+  padding-bottom: clamp(0.75rem, 2vmin, 1.25rem);
   position: relative;
   z-index: 2;
 }
@@ -1207,7 +1208,7 @@ body {
    *   - vertically:   100dvh minus header minus panel minus padding
    */
   width: min(calc(100vw - 1.2rem),
-      calc((100dvh - var(--header-h) - var(--panel-h) - 1.4rem) * (var(--cols, 4) / var(--rows, var(--cols, 4)))));
+      calc((100dvh - var(--header-h) - var(--panel-h) - 2.2rem) * (var(--cols, 4) / var(--rows, var(--cols, 4)))));
   aspect-ratio: var(--cols, 4) / var(--rows, var(--cols, 4));
 }
 
@@ -2764,8 +2765,8 @@ body {
   }
 
   .difficulty-choice-card {
-    padding: 0.55rem 0.65rem;
-    gap: 0.5rem;
+    padding: 0.75rem 0.75rem;
+    gap: 0.55rem;
   }
 
   .choice-icon {
